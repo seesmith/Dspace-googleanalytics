@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: Tim
+Build-Jdk: 1.6.0_24
+Specification-Title: Apache Solr Webapp
+Specification-Version: 3.3.0.0
+Specification-Vendor: DuraSpace
+Implementation-Title: Apache Solr Webapp
+Implementation-Version: 3.3.0.0
+Implementation-Vendor-Id: org.dspace
+Implementation-Vendor: DuraSpace
+

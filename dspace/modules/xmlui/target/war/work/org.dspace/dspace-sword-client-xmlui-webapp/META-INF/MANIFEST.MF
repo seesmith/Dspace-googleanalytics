@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: cknowles
+Build-Jdk: 1.6.0_23
+Specification-Title: DSpace Sword Client :: Sword Client XMLUI Webapp
+Specification-Version: 1.8.1
+Specification-Vendor: DuraSpace
+Implementation-Title: DSpace Sword Client :: Sword Client XMLUI Webapp
+Implementation-Version: 1.8.1
+Implementation-Vendor-Id: org.dspace
+Implementation-Vendor: DuraSpace
+

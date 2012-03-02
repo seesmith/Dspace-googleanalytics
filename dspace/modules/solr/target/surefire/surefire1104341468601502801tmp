@@ -1,0 +1,28 @@
+#surefire
+#Wed Feb 29 09:08:58 GMT 2012
+testClassesDirectory=C\:\\projects\\dspace\\1.8.1\\ga-trunk\\dspace\\modules\\solr\\target\\test-classes
+classPathUrl.4=C\:\\Documents and Settings\\cknowles\\.m2\\repository\\org\\slf4j\\slf4j-api\\1.5.6\\slf4j-api-1.5.6.jar
+forkMode=once
+classPathUrl.3=C\:\\Documents and Settings\\cknowles\\.m2\\repository\\commons-logging\\commons-logging\\1.0.4\\commons-logging-1.0.4.jar
+classPathUrl.2=C\:\\Documents and Settings\\cknowles\\.m2\\repository\\org\\dspace\\dspace-solr\\3.3.0.0\\dspace-solr-3.3.0.0-classes.jar
+useManifestOnlyJar=true
+classPathUrl.1=C\:\\projects\\dspace\\1.8.1\\ga-trunk\\dspace\\modules\\solr\\target\\classes
+reportsDirectory=C\:\\projects\\dspace\\1.8.1\\ga-trunk\\dspace\\modules\\solr\\target\\surefire-reports
+classPathUrl.0=C\:\\projects\\dspace\\1.8.1\\ga-trunk\\dspace\\modules\\solr\\target\\test-classes
+providerConfiguration=org.apache.maven.surefire.junit.JUnit3Provider
+testSuiteDefinitionTestSourceDirectory=C\:\\projects\\dspace\\1.8.1\\ga-trunk\\dspace\\modules\\solr\\src\\test\\java
+surefireClassPathUrl.1=C\:\\Documents and Settings\\cknowles\\.m2\\repository\\org\\apache\\maven\\surefire\\surefire-api\\2.9\\surefire-api-2.9.jar
+surefireClassPathUrl.0=C\:\\Documents and Settings\\cknowles\\.m2\\repository\\org\\apache\\maven\\surefire\\surefire-junit3\\2.9\\surefire-junit3-2.9.jar
+runOrder=filesystem
+useSystemClassLoader=true
+excludes0=**/*$*
+isTrimStackTrace=true
+enableAssertions=true
+includes2=**/*TestCase.java
+failIfNoTests=false
+includes1=**/*Test.java
+includes0=**/Test*.java
+classPathUrl.7=C\:\\Documents and Settings\\cknowles\\.m2\\repository\\xml-apis\\xml-apis\\1.0.b2\\xml-apis-1.0.b2.jar
+childDelegation=false
+classPathUrl.6=C\:\\Documents and Settings\\cknowles\\.m2\\repository\\xalan\\xalan\\2.7.0\\xalan-2.7.0.jar
+classPathUrl.5=C\:\\Documents and Settings\\cknowles\\.m2\\repository\\org\\slf4j\\slf4j-jdk14\\1.5.6\\slf4j-jdk14-1.5.6.jar

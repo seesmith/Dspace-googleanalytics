@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.dspace</groupId>
+   <artifactId>dspace-xmlui-lang</artifactId>
+   <packaging>war</packaging>
+   <name>DSpace XMLUI (Manakin) :: Translations</name>
+   <version>1.8.0.2</version>
+   <description>
+      DSpace Language Packs to support multiple languages in xmlui.
+   </description>
+   <url>http://projects.dspace.org/dspace-xmlui-lang</url>
+
+   <organization>
+      <name>DuraSpace</name>
+      <url>http://www.dspace.org</url>
+   </organization>
+
+   <parent>
+     <artifactId>dspace-pom</artifactId>
+     <groupId>org.dspace</groupId>
+     <version>12</version>
+   </parent>
+
+   <build>
+      <plugins>
+        <plugin>
+            <groupId>com.mycila.maven-license-plugin</groupId>
+            <artifactId>maven-license-plugin</artifactId>
+            <configuration>
+                <!--Exclude license check for all messages.xml files-->
+                <excludes>
+                    <exclude>**/messages_*.xml</exclude>
+                </excludes>
+            </configuration>
+        </plugin>
+      </plugins>
+   </build>
+
+   <!-- 
+      The Subversion repository location is used by Continuum to update against
+      when changes have occured, this spawns a new build cycle and releases snapshots
+      into the snapshot repository below.
+   -->
+   <scm>
+      <connection>scm:svn:http://scm.dspace.org/svn/repo/modules/dspace-xmlui-lang/tags/dspace-xmlui-lang-1.8.0.2</connection>
+      <developerConnection>scm:svn:https://scm.dspace.org/svn/repo/modules/dspace-xmlui-lang/tags/dspace-xmlui-lang-1.8.0.2</developerConnection>
+      <url>http://scm.dspace.org/svn/repo/modules/dspace-xmlui-lang/tags/dspace-xmlui-lang-1.8.0.2</url>
+   </scm>
+   
+</project>
