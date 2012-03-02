@@ -1,0 +1,20 @@
+DSpace 1.8.1 with additions to add google analytics statistics for viewing.  
+There is a google-analytics.cfg file in the config directory to set google analytics passwords, usernames and account details.
+Changes to core are in module overlays.
+New ga-stats module within maven.
+Jars required:
+
+jsr-3-5-1.0.jar
+libGoogleAnalytics-2.1.jar
+libGoogleAnalyticsMeta-2.1.jar
+libGoogleCollect-1.0.jar
+libGoogleCore-1.0.jar
+
+Google Analytics Cronjobs:
+
+0 3 * * * /dspace/bin/item-view-counter > /dspace/log/view-counter.log 2>&1
+0 3 * * * /dspace/bin/item-download-counter > /dspace/log/download-counter.log 2>&1
+
+Uses JQuery for statistics display
+
+Tuckey used for URLrewrite to redirect bitstream views from google to the display-item.jsp
