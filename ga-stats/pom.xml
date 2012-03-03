@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.dspace</groupId>
+    <artifactId>ga-stats</artifactId>
+    <version>1.8.1</version>
+    <packaging>jar</packaging>
+    <name>GA Stats for DSpace</name>
+
+    <parent>
+        <artifactId>dspace-parent</artifactId>
+        <groupId>org.dspace</groupId>
+        <version>1.8.1</version>
+        <relativePath>..</relativePath>
+    </parent>
+
+    <developers>
+        <developer>
+            <name>Claire Knowles</name>
+            <email>claire dot knowles at ed.ac.uk</email>
+            <url>http://www.ed.ac.uk</url>
+            <organization>University of Edinburgh</organization>
+            <organizationUrl>http://www.ed.ac.uk</organizationUrl>
+            <timezone>0</timezone>
+        </developer>
+    </developers>
+
+    <contributors/>
+
+    <dependencies>
+        <!--
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>com.google.gdata</groupId>
+            <artifactId>libGoogleAnalyticsMeta</artifactId>
+            <version>2.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gdata</groupId>
+            <artifactId>libGoogleAnalytics</artifactId>
+            <version>2.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gdata</groupId>
+            <artifactId>libGoogleCore</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.google.common</groupId>
+            <artifactId>libGoogleCollect</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jsr-305</groupId>
+            <artifactId>jsr-305</artifactId>
+            <version>1.0</version>
+        </dependency>
+	    <dependency>
+			<groupId>org.dspace</groupId>
+			<artifactId>dspace-api</artifactId>
+		</dependency>
+    </dependencies>
+
+      
+       
+</project>
