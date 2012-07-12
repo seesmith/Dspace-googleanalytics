@@ -12,6 +12,8 @@ import org.dspace.authorize.AuthorizeException;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Context;
 import org.dspace.eperson.Group;
+import org.dspace.googlestats.GoogleAnalyticsAccount;
+import org.dspace.googlestats.GoogleAnalyticsUtils;
 import org.dspace.googlestats.GoogleQueryManager;
 
 import javax.servlet.ServletException;
@@ -20,11 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Writer;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -86,69 +84,30 @@ public class GoogleAnalyticsQueryServlet extends DSpaceServlet
     {
 
         String headMetadata = "";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        try
+        //todo get dates from request and if empty revert to calendar
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String action = request.getParameter("action");
+
+        log.debug("GoogleAnalyticsQueryServlet action " + action);
+
+        String gaStart = GoogleAnalyticsAccount.getInstance().getStartDate();
+        request.setAttribute("gaStart", gaStart);
+
+        request.setAttribute("dspace.layout.head", headMetadata);
+        GoogleQueryManager query = new GoogleQueryManager();
+
+        List<String> dateErrors = GoogleAnalyticsUtils.testDate(startDate, endDate, gaStart);
+        Writer writer = response.getWriter();
+        Properties props = OutputPropertiesFactory.getDefaultMethodProperties(Method.XML);
+        Serializer ser = SerializerFactory.getSerializer(props);
+        ser.setWriter(writer);
+
+        response.setContentType("text/xml; charset=\"utf-8\"");
+
+        if (dateErrors.isEmpty())
         {
-            //todo get dates from request and if empty revert to calendar
-            String startDate = request.getParameter("startDate");
-            String endDate = request.getParameter("endDate");
-            String action = request.getParameter("action");
-
-            log.debug("GoogleAnalyticsQueryServlet action " + action);
-            log.debug("GoogleAnalyticsQueryServlet startDate " + startDate);
-            log.debug("GoogleAnalyticsQueryServlet endDate " + endDate);
-
-            if (startDate.length() == 0 || endDate.length() == 0)
-            {
-                Calendar gregCal = new GregorianCalendar();
-
-                endDate = sdf.format(gregCal.getTime());
-                gregCal.roll(Calendar.YEAR, -1);
-                startDate = sdf.format(gregCal.getTime());
-            }
-            else
-            {
-                try
-                {
-                    Date testDate = sdf.parse(startDate);
-                    if (!sdf.format(testDate).equals(startDate))
-                    {
-                        throw new ServletException("Start Date is not valid");
-                    }
-                }
-                catch (ParseException pe)
-                {
-                    throw new ServletException("Start Date is not valid");
-                }
-
-                try
-                {
-                    Date testDate = sdf.parse(endDate);
-                    if (!sdf.format(testDate).equals(endDate))
-                    {
-                        throw new ServletException("End Date is not valid");
-                    }
-                }
-                catch (ParseException pe)
-                {
-                    throw new ServletException("End Date is not valid");
-                }
-            }
-            //todo check dates are actual dates
-
-
-            String gaStart = ConfigurationManager.getProperty("googleanalytics.startdate");
-            request.setAttribute("gaStart", gaStart);
-
-            request.setAttribute("dspace.layout.head", headMetadata);
-            GoogleQueryManager query = new GoogleQueryManager();
-
-            response.setContentType("text/xml; charset=\"utf-8\"");
-            Properties props = OutputPropertiesFactory.getDefaultMethodProperties(Method.XML);
-            Serializer ser = SerializerFactory.getSerializer(props);
-            Writer writer = response.getWriter();
-            ser.setWriter(writer);
             try
             {
                 DataFeed feed;
@@ -189,7 +148,7 @@ public class GoogleAnalyticsQueryServlet extends DSpaceServlet
                 }
                 else if (action.equals("TopCountries"))
                 {
-                    feed = query.queryTopCountries(startDate, endDate);                   
+                    feed = query.queryTopCountries(startDate, endDate);
                     XmlWriter xmlW = new XmlWriter(writer);
                     writer.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
                     feed.generateAtom(xmlW, new ExtensionProfile());
@@ -203,21 +162,29 @@ public class GoogleAnalyticsQueryServlet extends DSpaceServlet
             }
             catch (Exception e)
             {
-                e.printStackTrace();
-                log.error("IOException error : " + e);
-                throw new IOException(e.toString());
+                //e.printStackTrace();
+                log.error("GoogleAnalyticsQueryServlet Exception : " + e);
+                writer.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>Error Generating XML " + e);
+                writer.flush();
 
             }
             finally
             {
                 ser.reset();
             }
+
         }
-        catch (Exception e)
+        else
         {
-            log.error("error : " + e);
-            //e.printStackTrace();
-            throw new ServletException(e);
+            log.info("Date error " + dateErrors);
+
+            writer.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+            for (String error : dateErrors)
+            {
+                writer.append("<error message=\""+error + "\"/>");
+            }
+            writer.flush();
+            ser.reset();
         }
 
     }

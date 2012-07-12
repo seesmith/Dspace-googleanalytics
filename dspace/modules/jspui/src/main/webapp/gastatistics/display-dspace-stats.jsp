@@ -256,6 +256,7 @@ function getTopCountries()
     </form>
 
 </div>
+<div id="message"></div>
 <div id="garesults">
     <div id="outputDiv" class="floatResults" style="width:200px;"></div>
     <div id="pageViewChartDiv" class="floatResults" style="width: 500px; height: 300px;"></div>

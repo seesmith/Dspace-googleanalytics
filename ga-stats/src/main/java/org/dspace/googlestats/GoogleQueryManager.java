@@ -28,30 +28,13 @@ public class GoogleQueryManager
      * <p/>
      * 2011-09-20 15:31:22,084 ERROR org.dspace.googlestats.GoogleQueryManager @ Analytics API responded with a service error message:  Error connecting with login URI
      */
-    private static final Logger log = Logger.getLogger(GoogleQueryManager.class);
+    private static Logger log = Logger.getLogger(GoogleQueryManager.class);
     private DataFeed feed;
-    private GoogleAnalyticsAccount gaa;
-
-    /**
-     * Initalise the system
-     */
-    public GoogleQueryManager()
-    {
-        try
-        {
-            gaa = GoogleAnalyticsConnector.getAccountDetails();
-        }
-        catch (MalformedURLException mal)
-        {
-            log.error(mal);
-        }
-    }
-
 
     public DataFeed queryViewDSpaceMonth(String startDate, String endDate)
     {
         URL queryUrl;
-        String baseUrl = GoogleAnalyticsConnector.ACCOUNTS_URL;
+        String baseUrl = GoogleAnalyticsAccount.getInstance().getDataUrl();
 
         //check start date is not before startDate in gaa 
         try
@@ -65,7 +48,7 @@ public class GoogleQueryManager
                     "&max-results=60" +
                     //"&filters=ga:pagePath%3D~/handle/" +
                     //check that handle won't return where item id is like handle + n
-                    "&ids=" + gaa.getSiteId();
+                    "&ids=" + GoogleAnalyticsAccount.getInstance().getSiteId();
 
             queryUrl = new URL(q);
             log.info("queryViewDSpaceMonth query " + q);
@@ -95,7 +78,7 @@ public class GoogleQueryManager
     public DataFeed queryBitstreamViewMonth(String startDate, String endDate)
     {
         URL queryUrl;
-        String baseUrl = GoogleAnalyticsConnector.ACCOUNTS_URL;
+        String baseUrl = GoogleAnalyticsAccount.getInstance().getDataUrl();
 
         //check start date is not before startDate in gaa
         try
@@ -108,7 +91,7 @@ public class GoogleQueryManager
                     "&sort=ga:year,ga:month" +
                     "&max-results=60" +
                     "&filters=ga:pagePath%3D~/bitstream/" +
-                    "&ids=" + gaa.getSiteId();
+                    "&ids=" + GoogleAnalyticsAccount.getInstance().getSiteId();
 
             queryUrl = new URL(q);
             log.info("query " + q);
@@ -139,7 +122,7 @@ public class GoogleQueryManager
     public DataFeed queryViewDSpaceMonth(DSpaceObject dso, String startDate, String endDate, AnalyticsService as)
     {
         URL queryUrl;
-        String baseUrl = GoogleAnalyticsConnector.ACCOUNTS_URL;
+        String baseUrl = GoogleAnalyticsAccount.getInstance().getDataUrl();
 
         //check start date is not before startDate in gaa
         try
@@ -151,7 +134,7 @@ public class GoogleQueryManager
                     "&metrics=ga:pageviews" +
                     "&sort=ga:year,ga:month" +
                     "&max-results=60" +
-                    "&ids=" + gaa.getSiteId() +
+                    "&ids=" + GoogleAnalyticsAccount.getInstance().getSiteId() +
                     "&filters=ga:pagePath%3D~/handle/" + dso.getHandle() + "$";
             //check that handle won't return where item id is like handle + n
 
@@ -183,7 +166,8 @@ public class GoogleQueryManager
     public DataFeed queryBitstreamViewMonth(DSpaceObject dso, String startDate, String endDate)
     {
         URL queryUrl;
-        String baseUrl = GoogleAnalyticsConnector.ACCOUNTS_URL;
+        String baseUrl = GoogleAnalyticsAccount.getInstance().getDataUrl();
+        log.info("base url " + baseUrl);
 
         //check start date is not before startDate in gaa
         try
@@ -196,7 +180,7 @@ public class GoogleQueryManager
                     "&sort=ga:year,ga:month" +
                     "&max-results=60" +
                     "&filters=ga:pagePath%3D~/bitstream/" + dso.getHandle() +
-                    "&ids=" + gaa.getSiteId();
+                    "&ids=" + GoogleAnalyticsAccount.getInstance().getSiteId();
 
             queryUrl = new URL(q);
             log.info("query " + q);
@@ -226,7 +210,7 @@ public class GoogleQueryManager
     public DataFeed queryTopPages(String startDate, String endDate)
     {
         URL queryUrl;
-        String baseUrl = GoogleAnalyticsConnector.ACCOUNTS_URL;
+        String baseUrl = GoogleAnalyticsAccount.getInstance().getDataUrl();
 
         //check start date is not before startDate in gaa
         try
@@ -238,7 +222,7 @@ public class GoogleQueryManager
                     "&metrics=ga:pageviews" +
                     "&sort=-ga:pageviews" +
                     "&max-results=10" +
-                    "&ids=" + gaa.getSiteId();
+                    "&ids=" + GoogleAnalyticsAccount.getInstance().getSiteId();
 
             queryUrl = new URL(q);
             log.info("query " + q);
@@ -272,7 +256,7 @@ public class GoogleQueryManager
     {
         //todo there must be a better way to get just the items
         URL queryUrl;
-        String baseUrl = GoogleAnalyticsConnector.ACCOUNTS_URL;
+        String baseUrl = GoogleAnalyticsAccount.getInstance().getDataUrl();;
         try
         {
 
@@ -305,7 +289,7 @@ public class GoogleQueryManager
                     "&sort=-ga:pageviews" +
                     "&max-results=200" +
                     "&filters=ga:pagePath%3D~/handle/[0-9]*/[0-9]*$" +
-                    "&ids=" + gaa.getSiteId();
+                    "&ids=" + GoogleAnalyticsAccount.getInstance().getSiteId();
 
             queryUrl = new URL(q);
             log.info("query TOP ITEMS =" + q);
@@ -325,21 +309,18 @@ public class GoogleQueryManager
                     //collection handle
                     Dimension di = new Dimension("resourceType", "Collection");
                     entry.addDimension(di);
-          
                 }
                 else if (commHandles.contains(handle))
                 {
                     //community handle
                     Dimension di = new Dimension("resourceType", "Community");
                     entry.addDimension(di);
-     
                 }
                 else
                 {
                     //item handle
                     Dimension di = new Dimension("resourceType", "Item");
                     entry.addDimension(di);
-         
                 }
             }
         }
@@ -371,7 +352,7 @@ public class GoogleQueryManager
     public DataFeed queryTopDownloads(String startDate, String endDate)
     {
         URL queryUrl;
-        String baseUrl = GoogleAnalyticsConnector.ACCOUNTS_URL;
+        String baseUrl = GoogleAnalyticsAccount.getInstance().getDataUrl();
 
         //check start date is not before startDate in gaa
         try
@@ -384,7 +365,7 @@ public class GoogleQueryManager
                     "&sort=-ga:pageviews" +
                     "&max-results=10" +
                     "&filters=ga:pagePath%3D~/bitstream/[0-9]*/[0-9]*" +
-                    "&ids=" + gaa.getSiteId();
+                    "&ids=" + GoogleAnalyticsAccount.getInstance().getSiteId();
 
             queryUrl = new URL(q);
             log.info("query " + q);
@@ -413,7 +394,7 @@ public class GoogleQueryManager
     public DataFeed queryTopCountries(String startDate, String endDate)
     {
         URL queryUrl;
-        String baseUrl = GoogleAnalyticsConnector.ACCOUNTS_URL;
+        String baseUrl = GoogleAnalyticsAccount.getInstance().getDataUrl();
         try
         {
             //check start date is not before startDate in gaa
@@ -424,7 +405,7 @@ public class GoogleQueryManager
                     "&metrics=ga:visits" +
                     "&sort=-ga:visits" +
                     "&max-results=100" +
-                    "&ids=" + gaa.getSiteId();
+                    "&ids=" + GoogleAnalyticsAccount.getInstance().getSiteId();
 
             queryUrl = new URL(q);
             log.info("query TOP countries " + q);

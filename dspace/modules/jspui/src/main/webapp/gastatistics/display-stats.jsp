@@ -87,7 +87,7 @@
                 dataType: "xml",
                 error: function()
                 {
-                    alert('Error loading XML document');
+                    document.getElementById("message").innerHTML = "Please modify the date to load statistics"
                 },
                 success: function(dataBack)
                 {
@@ -108,7 +108,7 @@
                 dataType: "xml",
                 error: function()
                 {
-                    alert('Error loading XML document');
+                    document.getElementById("message").innerHTML = "Please modify the date to load statistics"
                 },
                 success: function(dataBack)
                 {
@@ -140,6 +140,7 @@
 
         </form>
     </div>
+    <div id="message"></div>
     <div id="garesults">
         <div id="chromeDiv" class="floatResults" style="width:200px;"></div>
         <div class="clearfloat" style="clear:both; height:0; width:0"></div>

@@ -13,7 +13,9 @@ import org.dspace.content.DSpaceObject;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Context;
 import org.dspace.eperson.Group;
+import org.dspace.googlestats.GoogleAnalyticsAccount;
 import org.dspace.googlestats.GoogleAnalyticsConnector;
+import org.dspace.googlestats.GoogleAnalyticsUtils;
 import org.dspace.googlestats.GoogleQueryManager;
 import org.dspace.handle.HandleManager;
 
@@ -23,9 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -47,26 +47,6 @@ public class GoogleAnalyticsItemQueryServlet extends DSpaceServlet
                            HttpServletResponse response) throws ServletException, IOException,
             SQLException, AuthorizeException
     {
-       // is the statistics data publically viewable?
-        boolean privatereport = ConfigurationManager.getBooleanProperty("googleanalytics.item.authorization.admin");
-        // is the user a member of the Administrator (1) group?
-        boolean admin = Group.isMember(context, 1);
-        if (!privatereport || admin)
-        {
-            process(context, request, response);
-        }
-        else
-        {
-            log.info("Admin report");
-            throw new AuthorizeException("Unauthorised as not an administrator");
-        }
-
-    }
-
-    protected void doDSPost(Context context, HttpServletRequest request,
-                            HttpServletResponse response) throws ServletException, IOException,
-            SQLException, AuthorizeException
-    {
         // is the statistics data publically viewable?
         boolean privatereport = ConfigurationManager.getBooleanProperty("googleanalytics.item.authorization.admin");
         // is the user a member of the Administrator (1) group?
@@ -77,8 +57,26 @@ public class GoogleAnalyticsItemQueryServlet extends DSpaceServlet
         }
         else
         {
-           log.info("Admin report");
-           throw new AuthorizeException("Unauthorised as not an administrator");
+            throw new AuthorizeException();
+        }
+
+    }
+
+    protected void doDSPost(Context context, HttpServletRequest request,
+                            HttpServletResponse response) throws ServletException, IOException,
+            SQLException, AuthorizeException
+    {
+        // is the statistics data publically viewable?
+        boolean privateReport = ConfigurationManager.getBooleanProperty("googleanalytics.item.authorization.admin");
+        // is the user a member of the Administrator (1) group?
+        boolean admin = Group.isMember(context, 1);
+        if (!privateReport || admin)
+        {
+            process(context, request, response);
+        }
+        else
+        {
+            throw new AuthorizeException();
         }
 
     }
@@ -86,49 +84,45 @@ public class GoogleAnalyticsItemQueryServlet extends DSpaceServlet
     protected void process(Context context, HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException, AuthorizeException
     {
+
         String headMetadata = "";
 
-        try
+        //todo get dates from request and if empty revert to calendar
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String action = request.getParameter("action");
+        String handle = request.getParameter("handle");
+        DSpaceObject dso = HandleManager.resolveToObject(context, handle);
+
+        String gaStart = GoogleAnalyticsAccount.getInstance().getStartDate();
+        //todo change to debug
+        //log.info("GoogleAnalyticsItemQueryServlet StartDate:" + startDate + ", EndDate:" + endDate + ", GaStart:" + gaStart + ", Action:" + action + ", Handle:" + handle + ".");
+
+
+        request.setAttribute("gaStart", gaStart);
+
+        List<String> dateErrors = GoogleAnalyticsUtils.testDate(startDate, endDate, gaStart);
+
+
+        request.setAttribute("dspace.layout.head", headMetadata);
+        GoogleQueryManager query = new GoogleQueryManager();
+
+        response.setContentType("text/xml; charset=\"utf-8\"");
+        Properties props = OutputPropertiesFactory.getDefaultMethodProperties(Method.XML);
+        Serializer ser = SerializerFactory.getSerializer(props);
+        PrintWriter writer = response.getWriter();
+        ser.setWriter(writer);
+        if (dateErrors.isEmpty())
         {
-            //todo get dates from request and if empty revert to calendar
-            String startDate = request.getParameter("startDate");
-            String endDate = request.getParameter("endDate");
-            String action = request.getParameter("action");
-            String handle = request.getParameter("handle");
-            DSpaceObject dso = HandleManager.resolveToObject(context, handle);
-            log.debug("GoogleAnalyticsItemQueryServlet :" + startDate + "," + endDate + "," + action + "," + handle + ".");
-
-            if (startDate.length() == 0 || endDate.length() == 0)
-            {
-
-                Calendar gregCal = new GregorianCalendar();
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                endDate = sdf.format(gregCal.getTime());
-                gregCal.roll(Calendar.YEAR, -1);
-                startDate = sdf.format(gregCal.getTime());
-
-            }
-
-            String gaStart = ConfigurationManager.getProperty("googleanalytics.startdate");
-            request.setAttribute("gaStart", gaStart);
-
-            request.setAttribute("dspace.layout.head", headMetadata);
-            GoogleQueryManager query = new GoogleQueryManager();
-
-
-            response.setContentType("text/xml; charset=\"utf-8\"");
-            Properties props = OutputPropertiesFactory.getDefaultMethodProperties(Method.XML);
-            Serializer ser = SerializerFactory.getSerializer(props);
-            PrintWriter writer = response.getWriter();
-            ser.setWriter(writer);
             try
             {
                 DataFeed feed;
                 AnalyticsService as = GoogleAnalyticsConnector.getConnection();
                 if (action.equals("YearMonth"))
                 {
-
                     feed = query.queryViewDSpaceMonth(dso, startDate, endDate, as);
+                    //log.info("feed" + feed);
+                    //todo feed is null
                     XmlWriter xmlW = new XmlWriter(writer);
                     writer.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
                     feed.generateAtom(xmlW, as.getExtensionProfile());
@@ -150,19 +144,24 @@ public class GoogleAnalyticsItemQueryServlet extends DSpaceServlet
             catch (Exception e)
             {
                 log.error("Exception error : " + e);
-                throw new Exception(e.toString());
-
+                throw new ServletException(e.toString());
             }
             finally
             {
                 ser.reset();
             }
         }
-        catch (Exception e)
+        else
         {
-            log.error("error : " + e);
-            throw new ServletException(e);
-        }
+            log.info("Date error " + dateErrors);
 
+            writer.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+            for (String error : dateErrors)
+            {
+                writer.append("<error message=\""+error + "\"/>");
+            }
+            writer.flush();
+            ser.reset();
+        }
     }
 }

@@ -8,7 +8,6 @@ import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Context;
 import org.dspace.eperson.Group;
 import org.dspace.googlestats.GoogleAnalyticsAccount;
-import org.dspace.googlestats.GoogleAnalyticsConnector;
 import org.dspace.handle.HandleManager;
 
 import javax.servlet.ServletException;
@@ -39,7 +38,7 @@ public class GoogleAnalyticsItemServlet extends DSpaceServlet
                            HttpServletResponse response) throws ServletException, IOException,
             SQLException, AuthorizeException
     {
-        // is the statistics data publically viewable?
+        //get from google analytics account object
         boolean privatereport = ConfigurationManager.getBooleanProperty("googleanalytics.item.authorization.admin");
          // is the user a member of the Administrator (1) group?
         boolean admin = Group.isMember(context, 1);
@@ -91,12 +90,11 @@ public class GoogleAnalyticsItemServlet extends DSpaceServlet
 
             request.setAttribute("dso", dso);
             request.setAttribute("dspace.layout.head", headMetadata);
-            GoogleAnalyticsAccount acc = GoogleAnalyticsConnector.getAccountDetails();
-            request.setAttribute("siteId", acc.getSiteId());
+            request.setAttribute("siteId", GoogleAnalyticsAccount.getInstance().getSiteId());
             request.setAttribute("startDate", startDate);
             request.setAttribute("endDate",endDate);
 
-            String gaStart = ConfigurationManager.getProperty("googleanalytics.startdate");
+            String gaStart = GoogleAnalyticsAccount.getInstance().getStartDate();
             request.setAttribute("gaStart", gaStart);
 
             JSPManager.showJSP(request, response, "/gastatistics/display-stats.jsp");
