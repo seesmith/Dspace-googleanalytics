@@ -70,19 +70,6 @@
     <filter-class>org.dspace.app.webui.filter.RegisteredOnlyFilter</filter-class>
   </filter>
 
-  <filter>
-        <filter-name>UrlRewriteFilter</filter-name>
-        <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
-        <!-- sets up log level (will be logged to context log)
-                can be: TRACE, DEBUG, INFO (default), WARN, ERROR, FATAL, log4j, commons, slf4j,
-                sysout:{level} (ie, sysout:DEBUG)
-                if you are having trouble using normal levels use sysout:DEBUG
-                (default WARN) -->
-        <init-param>
-            <param-name>logLevel</param-name>
-            <param-value>DEBUG</param-value>
-        </init-param>
-  </filter>
 
 
   <!-- Filter mappings -->
@@ -134,13 +121,6 @@
     <url-pattern>/view-workspaceitem</url-pattern>
   </filter-mapping>
 
-  <filter-mapping>
-        <filter-name>UrlRewriteFilter</filter-name>
-        <url-pattern>/bitstream/*</url-pattern>
-        <dispatcher>REQUEST</dispatcher>
-        <dispatcher>FORWARD</dispatcher>
-  </filter-mapping>
- 
 
   <!-- kernel start listener (from impl), starts up the kernel for standalong webapps -->
   <listener>

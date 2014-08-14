@@ -17,4 +17,4 @@ Google Analytics Cronjobs:
 
 Uses JQuery for statistics display
 
-Tuckey used for URLrewrite to redirect bitstream views from google to the display-item.jsp
+PLEASE NOTE that Tuckey is no longer used for URLrewrite to redirect bitstream views from google to the display-item.jsp as this causes the site to not be indexed by Google Scholar 

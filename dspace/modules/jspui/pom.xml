@@ -138,12 +138,6 @@
             <artifactId>ga-stats</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.tuckey</groupId>
-            <artifactId>urlrewrite</artifactId>
-            <version>3.2.0</version>
-      </dependency>
-
 	</dependencies>
 
 </project>
